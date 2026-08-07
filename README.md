@@ -3,8 +3,9 @@
 - Dataset: CIFAR-10
 - Model: ResNet18
 - Epochs: 200
-- Best Test Accuracy: 94.48%
+- Final Train Accuracy: 99.99%
 - Final Test Accuracy: 94.31%
+- Best Test Accuracy: 94.48%
 
 The trained model is available in `weights/resnet18_best.pth`.
-Training curves are available in the `outputs/` folder.
+Training (loss and accuracy) curves are available in the `outputs/` folder.
