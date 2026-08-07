@@ -1,19 +1,7 @@
 """
 main.py —— 启动入口
-对应课件 80 页项目结构，用 argparse 解析命令行参数，
 串联 data.py / models / train.py / util.py 完成完整训练流程。
 
-作业要求（对照课件81页）：
-  - 模型: resnet18
-  - epoch: 200
-  - 使用GPU训练
-  - 初始学习率: 0.2
-  - 训练完成后记录训练精度
-
-运行方式（默认参数已满足作业要求，直接运行即可）：
-    python main.py
-或自定义参数：
-    python main.py --modelpython main.py --model resnet18 --lr 0.2 --steps 2 --gpu resnet18 --lr 0.2 --steps 200 --gpu
 """
 
 from __future__ import print_function
@@ -36,7 +24,7 @@ args = parser.parse_args()
 
 
 def main():
-    # ---- 检查GPU是否可用（CUDA优先，其次Mac的MPS，都没有就用CPU） ----
+    # 检查GPU是否可用（CUDA优先，其次Mac的MPS，都没有就用CPU）
     has_cuda = torch.cuda.is_available()
     has_mps = hasattr(torch.backends, 'mps') and torch.backends.mps.is_available()
     train_on_gpu = args.gpu and (has_cuda or has_mps)
@@ -48,18 +36,18 @@ def main():
     elif has_mps:
         print('检测到 Mac Apple Silicon GPU，将使用 MPS 训练')
 
-    # ---- 2. 定义网络结构 ----
+    # 定义网络结构
     model_name = args.model
     model = model_factory(model_name)
 
-    # ---- 组装 Trainer，串联 3.损失函数 / 4.优化器 ----
+    # 组装 Trainer，串联 3.损失函数 / 4.优化器
     trainer = Trainer(model_name, model, train_on_gpu)
 
-    # ---- 5. 迭代训练 + 评估 ----
+    # 迭代训练 + 评估
     history, best_acc = trainer.train_and_evaluate(
         trainloader, testloader, num_epochs=args.steps, lr=args.lr)
 
-    # ---- 可视化 & 记录最终精度 ----
+    # 可视化 & 记录最终精度
     plot_history(history)
     print('=' * 50)
     print('最终训练精度记录：')
