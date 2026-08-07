@@ -1,7 +1,6 @@
 """
 util.py —— 显示工具
-对应课件 79 页：训练完成后画出 loss / accuracy 随 epoch 变化的曲线，
-用于直观判断模型是否收敛（loss该下降、acc该上升）。
+训练完成后画出 loss / accuracy 随 epoch 变化的曲线，
 """
 
 import matplotlib.pyplot as plt
@@ -11,7 +10,7 @@ import os
 def plot_history(history, save_dir='outputs'):
     os.makedirs(save_dir, exist_ok=True)
 
-    # ---- loss 曲线 ----
+    # loss 曲线
     plt.figure()
     plt.plot(history['train_loss'], label='train loss')
     plt.plot(history['test_loss'], label='test loss')
@@ -22,7 +21,7 @@ def plot_history(history, save_dir='outputs'):
     plt.savefig(os.path.join(save_dir, 'loss_curve.png'))
     plt.close()
 
-    # ---- accuracy 曲线 ----
+    # accuracy 曲线
     plt.figure()
     plt.plot(history['train_acc'], label='train acc')
     plt.plot(history['test_acc'], label='test acc')
