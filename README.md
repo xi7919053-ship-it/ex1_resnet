@@ -2,6 +2,8 @@
 
 - Dataset: CIFAR-10
 - Model: ResNet18
+- Trained on Google Colab using an NVIDIA T4 GPU (CUDA)
+
 - Epochs: 200
 - Final Train Accuracy: 99.99%
 - Final Test Accuracy: 94.31%
