@@ -41,11 +41,14 @@ print("使用设备:", device)
 # 创建模型
 model = ResNet18(num_classes=10).to(device)
 
-
 # 加载训练好的模型参数
-model.load_state_dict(
-    torch.load("weights/resnet18_best.pth", map_location=device)
+checkpoint = torch.load(
+    "weights/resnet18_best.pth",
+    map_location=device
 )
+
+model.load_state_dict(checkpoint["model_state_dict"])
+
 
 # 切换到评估模式
 model.eval()
