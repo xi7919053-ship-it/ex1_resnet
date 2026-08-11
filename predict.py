@@ -1,10 +1,12 @@
 import os
 import torch
 import torch.nn.functional as F
+import matplotlib.pyplot as plt
 from PIL import Image
 from torchvision import transforms
 
 from models.resnet import ResNet18
+
 
 
 # CIFAR-10 10个类别
@@ -88,3 +90,12 @@ for filename in os.listdir(image_dir):
         f"{predicted_class:10s} "
         f"({confidence_value:.2f}%)"
     )
+
+# 显示图片
+plt.imshow(image)
+plt.axis("off")
+
+# 设置标题
+plt.title(f"Prediction: {predicted_class} ({confidence_value:.2f}%)")
+
+plt.show()
