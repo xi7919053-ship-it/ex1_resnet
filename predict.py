@@ -95,7 +95,7 @@ for filename in os.listdir(image_dir):
     )
 
 
-# 显示图片
+# 显示图片和结果
 for filename in os.listdir(image_dir):
 
     if not filename.lower().endswith((".jpg", ".jpeg", ".png")):
