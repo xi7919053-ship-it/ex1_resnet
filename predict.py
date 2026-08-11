@@ -94,11 +94,38 @@ for filename in os.listdir(image_dir):
         f"({confidence_value:.2f}%)"
     )
 
+
 # 显示图片
-plt.imshow(image)
-plt.axis("off")
+for filename in os.listdir(image_dir):
 
-# 设置标题
-plt.title(f"Prediction: {predicted_class} ({confidence_value:.2f}%)")
+    if not filename.lower().endswith((".jpg", ".jpeg", ".png")):
+        continue
 
-plt.show()
+    image_path = os.path.join(image_dir, filename)
+
+    # 打开图片
+    image = Image.open(image_path).convert("RGB")
+
+    # 预处理
+    image_tensor = transform(image)
+    image_tensor = image_tensor.unsqueeze(0).to(device)
+
+    with torch.no_grad():
+        outputs = model(image_tensor)
+        probabilities = F.softmax(outputs, dim=1)
+        confidence, predicted = torch.max(probabilities, 1)
+
+    predicted_class = classes[predicted.item()]
+    confidence_value = confidence.item() * 100
+
+    print("=" * 60)
+    print(f"Image: {filename}")
+    print(f"Prediction: {predicted_class}")
+    print(f"Confidence: {confidence_value:.2f}%")
+
+    plt.figure(figsize=(5, 5))
+    plt.imshow(image)
+    plt.axis("off")
+    plt.title(f"Prediction: {predicted_class} ({confidence_value:.2f}%)")
+    plt.show()
+
