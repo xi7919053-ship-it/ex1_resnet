@@ -8,8 +8,6 @@ from torchvision import transforms
 from models.resnet import ResNet18
 
 
-# 创建保存结果的文件夹
-os.makedirs("prediction_results", exist_ok=True)
 
 # CIFAR-10 10个类别
 classes = [
@@ -105,10 +103,8 @@ for filename in os.listdir(image_dir):
 
     image_path = os.path.join(image_dir, filename)
 
-    # 打开图片
     image = Image.open(image_path).convert("RGB")
 
-    # 预处理
     image_tensor = transform(image)
     image_tensor = image_tensor.unsqueeze(0).to(device)
 
@@ -128,13 +124,28 @@ for filename in os.listdir(image_dir):
     plt.figure(figsize=(5, 5))
     plt.imshow(image)
     plt.axis("off")
-    plt.title(f"Prediction: {predicted_class} ({confidence_value:.2f}%)")
+    plt.title(
+        f"Prediction: {predicted_class}\n"
+        f"Confidence: {confidence_value:.2f}%"
+    )
+
+    # 创建保存结果的文件夹
+    os.makedirs("prediction_results", exist_ok=True)
+
+    
+    # 保存当前这张图片的预测结果
+    save_path = (
+        f"prediction_results/"
+        f"{os.path.splitext(filename)[0]}_result.png"
+    )
+
     plt.savefig(
-    f"prediction_results/{os.path.splitext(filename)[0]}_result.png",
-    dpi=300,
-    bbox_inches="tight"
-)
+        save_path,
+        dpi=300,
+        bbox_inches="tight"
+    )
 
-plt.show()
-plt.close()
+    print(f"Saved to: {save_path}")
 
+    plt.show()
+    plt.close()
