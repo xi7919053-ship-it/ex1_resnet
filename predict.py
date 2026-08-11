@@ -44,7 +44,7 @@ model = ResNet18(num_classes=10).to(device)
 
 # 加载训练好的模型参数
 model.load_state_dict(
-    torch.load("weights/best.pth", map_location=device)
+    torch.load("weights/resnet18_best.pth", map_location=device)
 )
 
 # 切换到评估模式
