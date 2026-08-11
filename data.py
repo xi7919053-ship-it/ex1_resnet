@@ -1,5 +1,5 @@
 """
-data.py —— 数据集准备 page73-74 页
+data.py —— 数据集准备
 定义 transforms 预处理流程，加载 CIFAR10，
 并封装成 trainloader / testloader 供训练使用。
 """
