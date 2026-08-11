@@ -1,10 +1,12 @@
 import os
 import torch
 import torch.nn.functional as F
+import matplotlib.pyplot as plt
 from PIL import Image
 from torchvision import transforms
 
 from models.resnet import ResNet18
+
 
 
 # CIFAR-10 10个类别
@@ -39,11 +41,14 @@ print("使用设备:", device)
 # 创建模型
 model = ResNet18(num_classes=10).to(device)
 
-
 # 加载训练好的模型参数
-model.load_state_dict(
-    torch.load("weights/best.pth", map_location=device)
+checkpoint = torch.load(
+    "weights/resnet18_best.pth",
+    map_location=device
 )
+
+model.load_state_dict(checkpoint["model_state_dict"])
+
 
 # 切换到评估模式
 model.eval()
@@ -69,15 +74,15 @@ for filename in os.listdir(image_dir):
     # [3,32,32] -> [1,3,32,32]
     image_tensor = image_tensor.unsqueeze(0).to(device)
 
-    # 推理阶段 
-    # !!!不需要计算梯度
+    # 推理阶段
+    # ！！！注意注意此处不需要计算梯度
     with torch.no_grad():
         outputs = model(image_tensor)
 
         # 将logits转换为概率
         probabilities = F.softmax(outputs, dim=1)
 
-        # 找到概率最大的类别-->即为预测结果
+        # 找到概率最大的类别 -> 即为预测结果
         confidence, predicted = torch.max(probabilities, 1)
 
     predicted_class = classes[predicted.item()]
@@ -88,3 +93,39 @@ for filename in os.listdir(image_dir):
         f"{predicted_class:10s} "
         f"({confidence_value:.2f}%)"
     )
+
+
+# 显示图片
+for filename in os.listdir(image_dir):
+
+    if not filename.lower().endswith((".jpg", ".jpeg", ".png")):
+        continue
+
+    image_path = os.path.join(image_dir, filename)
+
+    # 打开图片
+    image = Image.open(image_path).convert("RGB")
+
+    # 预处理
+    image_tensor = transform(image)
+    image_tensor = image_tensor.unsqueeze(0).to(device)
+
+    with torch.no_grad():
+        outputs = model(image_tensor)
+        probabilities = F.softmax(outputs, dim=1)
+        confidence, predicted = torch.max(probabilities, 1)
+
+    predicted_class = classes[predicted.item()]
+    confidence_value = confidence.item() * 100
+
+    print("=" * 60)
+    print(f"Image: {filename}")
+    print(f"Prediction: {predicted_class}")
+    print(f"Confidence: {confidence_value:.2f}%")
+
+    plt.figure(figsize=(5, 5))
+    plt.imshow(image)
+    plt.axis("off")
+    plt.title(f"Prediction: {predicted_class} ({confidence_value:.2f}%)")
+    plt.show()
+
